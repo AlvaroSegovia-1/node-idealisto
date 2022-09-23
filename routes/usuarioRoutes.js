@@ -1,14 +1,14 @@
-import  express from "express";
+import express from "express";
+import {
+  formularioLogin,
+  formularioRegistro,
+} from "../controllers/usuarioController.js";
 
 const router = express.Router();
 
 // Routing
-router.get("/", (req, res) => {
-  res.send("Hola amigos");
-});
+router.get("/login", formularioLogin);
 
-router.get("/nosotros", (req, res) => {
-  res.send("Hola nosotros");
-});
+router.get("/registro", formularioRegistro);
 
 export default router;
