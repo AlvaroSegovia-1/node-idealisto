@@ -118,9 +118,13 @@ const validarRegistro = async (req, res) => {
     });
   }
 
-  // importar modelo usuario
-  const usuario = await Usuario.create(req.body);
-  res.json(usuario);
+  // Almacenar usuario
+  const usuario = await Usuario.create({
+    nombre,
+    email,
+    password,
+    token: 123,
+  });
 };
 
 const formularioOlvidePassword = (req, res) => {
