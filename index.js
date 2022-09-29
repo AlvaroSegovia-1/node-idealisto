@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 try {
   await db.authenticate();
   // añadir para que se conecte correctamente a la db
-   db.sync();
+  db.sync();
   console.log("Conexión correcta a la base de datos");
 } catch (error) {
   console.log(error);
@@ -30,7 +30,7 @@ app.use(express.static("public"));
 app.use("/auth", usuarioRoutes);
 
 // Definir un puerto y arrancar el proyecto
-const port = 9000;
+const port = process.env.PORT || 9000;
 
 app.listen(port, () => {
   console.log(`arrancado en el puerto ${port}`);

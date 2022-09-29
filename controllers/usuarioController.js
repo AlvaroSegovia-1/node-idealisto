@@ -1,5 +1,7 @@
 import { check, body, validationResult } from "express-validator";
 import Usuario from "../models/Usuario.js";
+import { generarId } from "../helpers/tokens.js";
+import { emailRegistro } from "../helpers/email.js";
 
 const formularioLogin = (req, res) => {
   res.render("auth/login", {
@@ -123,7 +125,20 @@ const validarRegistro = async (req, res) => {
     nombre,
     email,
     password,
-    token: 123,
+    token: generarId(),
+  });
+
+  // Envia email de confirmación
+  emailRegistro({
+    nombre: usuario.nombre,
+    email: usuario.email,
+    token: usuario.token,
+  });
+
+  // Mostrar mensaje de confirmación
+  res.render("templates/mensaje", {
+    pagina: "Cuenta Creada correctamente",
+    mensaje: "Hemos enviado un Email de confirmación, presiona en el enlace",
   });
 };
 
@@ -133,9 +148,37 @@ const formularioOlvidePassword = (req, res) => {
   });
 };
 
+// Función que comprueba una cuenta
+const confirmar = async (req, res) => {
+  const { token } = req.params;
+  //console.log(req.params.token);
+
+  // Verificar si el token es válido
+  const usuario = await Usuario.findOne({ where: { token } });
+  //console.log(usuario);
+  if (!usuario) {
+    return res.render("auth/confirmar-cuenta", {
+      pagina: "Error al confirmar tu cuenta",
+      mensaje: "Hubo un error al confirmar tu cuenta, intenta de nuevo",
+      error: true,
+    });
+  }
+
+  // Confirmar la cuenta
+  usuario.token = null;
+  usuario.confirmado = true;
+  await usuario.save();
+
+  res.render("auth/confirmar-cuenta", {
+    pagina: "Cuenta confirmada",
+    mensaje: "La cuenta se confirmó correctamente",
+  });
+};
+
 export {
   formularioLogin,
   formularioRegistro,
   validarRegistro,
   formularioOlvidePassword,
+  confirmar,
 };
