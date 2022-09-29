@@ -10,8 +10,11 @@ const formularioLogin = (req, res) => {
 };
 
 const formularioRegistro = (req, res) => {
+  //console.log(req.csrfToken());
+
   res.render("auth/registro", {
     pagina: "crear cuenta",
+    csrfToken: req.csrfToken(),
   });
 };
 // Version 6.14 de express-validator
@@ -93,6 +96,7 @@ const validarRegistro = async (req, res) => {
     // Errores
     return res.render("auth/registro", {
       pagina: "Crear Cuenta",
+      csrfToken: req.csrfToken(),
       errores: resultado.array(),
       usuario: {
         nombre: req.body.nombre,
@@ -112,6 +116,7 @@ const validarRegistro = async (req, res) => {
   if (existeUsuario) {
     return res.render("auth/registro", {
       pagina: "Crear Cuenta",
+      csrfToken: req.csrfToken(),
       errores: [{ msg: "Este Usuario ya está Registrado" }],
       usuario: {
         nombre: req.body.nombre,
